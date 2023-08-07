@@ -67,10 +67,13 @@ pub struct Tetris {
 
 impl Tetris {
     pub fn new() -> Tetris {
+        let mut pieces = Piece::generate_pieces();
+        pieces.append(Piece::generate_pieces().as_mut());
         let mut next = VecDeque::new();
-        next.push_back(Piece::new());
-        next.push_back(Piece::new());
-        next.push_back(Piece::new());
+
+        for piece in pieces.iter() {
+            next.push_back(piece.clone());
+        }
 
         Tetris {
             next,
@@ -153,14 +156,14 @@ impl Tetris {
             && self.move_timer == 0
         {
             self.piece.x -= 1;
-            self.move_timer = 10;
+            self.move_timer = 12;
         }
         if is_key_down(KeyCode::Right)
             && self.piece_can_move(self.piece.clone(), Vec2 { x: 1.0, y: 0.0 })
             && self.move_timer == 0
         {
             self.piece.x += 1;
-            self.move_timer = 10;
+            self.move_timer = 12;
         }
 
         // Handle piece rotation
@@ -201,7 +204,13 @@ impl Tetris {
 
     fn next_piece(&mut self) -> Piece {
         let piece = self.next.pop_front().unwrap();
-        self.next.push_back(Piece::new());
+        if self.next.len() < 7 {
+            let mut pieces = Piece::generate_pieces();
+            pieces.append(Piece::generate_pieces().as_mut());
+            for piece in pieces.iter() {
+                self.next.push_back(piece.clone());
+            }
+        }
         piece
     }
 

@@ -41,6 +41,27 @@ impl Piece {
             }
         }
     }
+
+    // generate an array of all pieces
+    pub fn generate_pieces() -> Vec<Piece> {
+        let mut pieces = Vec::new();
+        (0..7).for_each(|i| {
+            pieces.push(Piece {
+                x: 2,
+                y: 0,
+                shape: PIECES[i],
+            });
+        });
+
+        //randomize piece order
+        for i in 0..pieces.len() {
+            let random_index = rand::gen_range::<usize>(0, pieces.len());
+            let temp = pieces[i].clone();
+            pieces[i] = pieces[random_index].clone();
+            pieces[random_index] = temp;
+        }
+        pieces
+    }
 }
 
 pub const PIECES: [[[u8; 4]; 4]; 7] = [
